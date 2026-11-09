@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>축제 음료 상점 - 키오스크</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      background-color: #010a13;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(30, 48, 70, 0.5) 0%, transparent 70%),
+        radial-gradient(circle at 50% 100%, rgba(10, 20, 30, 0.8) 0%, transparent 80%);
+    }
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    
+    /* LoL Hextech 테두리 및 텍스트 스타일 */
+    .hextech-border {
+      border: 1px solid #785a28;
+      box-shadow: 0 0 12px rgba(1, 10, 19, 0.8), inset 0 0 10px rgba(200, 170, 110, 0.15);
+    }
+    .gold-gradient-text {
+      background: linear-gradient(180deg, #f0e6d2 0%, #c8aa6e 70%, #785a28 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .lol-card {
+      background: linear-gradient(180deg, rgba(16, 26, 35, 0.95) 0%, rgba(9, 14, 21, 0.98) 100%);
+      border: 1px solid #3c3c41;
+      transition: all 0.2s ease-in-out;
+    }
+    .lol-card:active {
+      transform: scale(0.985);
+    }
+    .btn-lol-gold {
+      background: linear-gradient(180deg, #1e282d 0%, #111a1e 100%);
+      border: 1px solid #c8aa6e;
+      color: #f0e6d2;
+      box-shadow: 0 0 8px rgba(200, 170, 110, 0.2);
+    }
+    .btn-lol-gold:active {
+      background: #785a28;
+      color: #ffffff;
+    }
+    .btn-lol-cta {
+      background: linear-gradient(180deg, #c8aa6e 0%, #785a28 100%);
+      border: 1px solid #f0e6d2;
+      color: #010a13;
+      box-shadow: 0 0 16px rgba(200, 170, 110, 0.4);
+    }
+    .btn-lol-cta:active {
+      filter: brightness(1.2);
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-200 flex flex-col justify-between p-3 md:p-6">
+
+  <!-- ================= TOP HEADER ================= -->
+  <header class="flex items-center justify-between border-b border-[#785a28]/60 pb-3 mb-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded border border-[#c8aa6e] bg-[#091428] flex items-center justify-center shadow-lg">
+        <span class="text-xl">⚔️</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-cinzel text-xl md:text-2xl font-bold tracking-wider gold-gradient-text">축제 음료 상점</h1>
+          <span class="px-2 py-0.5 rounded text-xs font-bold bg-[#1e2328] text-[#c8aa6e] border border-[#785a28]">전 메뉴 1,000원</span>
+        </div>
+        <p class="text-xs text-[#a09b8c]">원하시는 물약을 터치하여 인벤토리(장바구니)에 담아주세요</p>
+      </div>
+    </div>
+
+    <!-- 우측 상단 유틸리티 버튼 -->
+    <div class="flex items-center gap-2">
+      <button onclick="toggleFullscreen()" class="px-3 py-1.5 rounded text-xs font-semibold bg-[#111a1e] border border-[#3c3c41] text-[#a09b8c] hover:text-[#f0e6d2] active:bg-[#1e282d]">
+        ⛶ 전체화면
+      </button>
+      <button onclick="openAdminModal()" class="px-3 py-1.5 rounded text-xs font-semibold bg-[#111a1e] border border-[#3c3c41] text-[#a09b8c] hover:text-[#f0e6d2] active:bg-[#1e282d]">
+        ⚙️ 관리
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= MAIN MENU ITEMS (2 POTIONS) ================= -->
+  <main class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto w-full mb-4 items-stretch">
+    
+    <!-- 1. 체력 물약 (복숭아 아이스티) -->
+    <div class="lol-card rounded-lg p-5 flex flex-col justify-between hextech-border">
+      <div>
+        <div class="flex gap-4 items-start">
+          <!-- 롤 체력 물약 인게임 이미지 -->
+          <div class="relative w-24 h-24 flex-shrink-0 rounded border-2 border-[#785a28] bg-black overflow-hidden shadow-md">
+            <img src="https://ddragon.leagueoflegends.com/cdn/14.23.1/img/item/2003.png" 
+                 alt="체력 물약" 
+                 class="w-full h-full object-cover">
+            <span class="absolute bottom-1 right-1 text-[11px] font-bold px-1 rounded bg-black/80 text-[#c8aa6e] border border-[#785a28]">물약</span>
+          </div>
+          
+          <div class="flex-1">
+            <div class="flex justify-between items-start">
+              <div>
+                <h2 class="text-2xl font-black text-[#f0e6d2] tracking-wide">체력 물약</h2>
+                <!-- 강조된 실제 음료명 -->
+                <p class="text-lg md:text-xl font-black text-amber-400 mt-0.5 tracking-tight drop-shadow">
+                  (복숭아 아이스티)
+                </p>
+              </div>
+              <div class="text-right">
+                <span class="text-2xl font-black text-amber-300 font-cinzel">1,000원</span>
+                <p class="text-[11px] text-slate-400">고유: 물약</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 롤 인게임 패러디 툴팁 설명 박스 -->
+        <div class="mt-4 p-3 rounded bg-[#010a13]/80 border border-[#1e2328] text-xs leading-relaxed space-y-1">
+          <p class="text-[#c8aa6e] font-semibold flex items-center gap-1">
+            <span>⚡</span> <span class="text-amber-200">사용:</span> 축제를 즐기느라 방전된 체력과 당분을 <span class="text-emerald-400 font-bold">15초에 걸쳐 120 회복</span>합니다.
+          </p>
+          <p class="text-slate-400">
+            달콤하고 시원한 복숭아 과즙이 온몸에 생기를 불어넣습니다.
+          </p>
+          <p class="text-[11px] text-slate-500 pt-1 border-t border-slate-800">
+            최대로 보유할 수 있는 수량 제한 없음
+          </p>
+        </div>
+      </div>
+
+      <!-- 수량 컨트롤러 -->
+      <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between">
+        <span class="text-xs text-slate-400 font-medium">선택 수량</span>
+        <div class="flex items-center gap-2">
+          <button onclick="changeQty('peach', -1)" class="w-11 h-11 rounded border border-[#3c3c41] bg-[#111a1e] text-slate-200 text-xl font-bold active:scale-95 flex items-center justify-center">
+            -
+          </button>
+          <span id="qty-peach" class="w-12 text-center text-2xl font-black text-[#f0e6d2] font-cinzel">0</span>
+          <button onclick="changeQty('peach', 1)" class="btn-lol-gold w-11 h-11 rounded text-xl font-bold active:scale-95 flex items-center justify-center">
+            +
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 충전형 물약 (블루레몬에이드) -->
+    <div class="lol-card rounded-lg p-5 flex flex-col justify-between hextech-border">
+      <div>
+        <div class="flex gap-4 items-start">
+          <!-- 롤 충전형 물약 인게임 이미지 -->
+          <div class="relative w-24 h-24 flex-shrink-0 rounded border-2 border-[#785a28] bg-black overflow-hidden shadow-md">
+            <img src="https://ddragon.leagueoflegends.com/cdn/14.23.1/img/item/2031.png" 
+                 alt="충전형 물약" 
+                 class="w-full h-full object-cover">
+            <span class="absolute bottom-1 right-1 text-[11px] font-bold px-1 rounded bg-black/80 text-[#0ac8b9] border border-[#0ac8b9]/60">충전</span>
+          </div>
+          
+          <div class="flex-1">
+            <div class="flex justify-between items-start">
+              <div>
+                <h2 class="text-2xl font-black text-[#f0e6d2] tracking-wide">충전형 물약</h2>
+                <!-- 강조된 실제 음료명 -->
+                <p class="text-lg md:text-xl font-black text-cyan-400 mt-0.5 tracking-tight drop-shadow">
+                  (블루레몬에이드)
+                </p>
+              </div>
+              <div class="text-right">
+                <span class="text-2xl font-black text-cyan-300 font-cinzel">1,000원</span>
+                <p class="text-[11px] text-slate-400">고유: 물약</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 롤 인게임 패러디 툴팁 설명 박스 -->
+        <div class="mt-4 p-3 rounded bg-[#010a13]/80 border border-[#1e2328] text-xs leading-relaxed space-y-1">
+          <p class="text-[#0ac8b9] font-semibold flex items-center gap-1">
+            <span>⚡</span> <span class="text-cyan-200">사용 시:</span> 12초에 걸쳐 갈증을 해소하고 <span class="text-emerald-400 font-bold">100의 청량한 활력</span>을 충전합니다.
+          </p>
+          <p class="text-slate-400">
+            상쾌한 탄산과 새콤한 블루레몬의 짜릿함이 피로를 날려줍니다.
+          </p>
+          <p class="text-[11px] text-slate-500 pt-1 border-t border-slate-800">
+            상점(부스)을 다시 찾아올 때마다 시원하게 새로 드립니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 수량 컨트롤러 -->
+      <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between">
+        <span class="text-xs text-slate-400 font-medium">선택 수량</span>
+        <div class="flex items-center gap-2">
+          <button onclick="changeQty('lemon', -1)" class="w-11 h-11 rounded border border-[#3c3c41] bg-[#111a1e] text-slate-200 text-xl font-bold active:scale-95 flex items-center justify-center">
+            -
+          </button>
+          <span id="qty-lemon" class="w-12 text-center text-2xl font-black text-[#f0e6d2] font-cinzel">0</span>
+          <button onclick="changeQty('lemon', 1)" class="btn-lol-gold w-11 h-11 rounded text-xl font-bold active:scale-95 flex items-center justify-center">
+            +
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= BOTTOM ORDER BAR ================= -->
+  <footer class="max-w-5xl mx-auto w-full rounded-xl bg-[#0a141e]/95 border-2 border-[#785a28] p-4 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-6 w-full md:w-auto justify-between md:justify-start">
+      <div>
+        <p class="text-xs text-slate-400">총 선택 물약</p>
+        <p class="text-xl font-black text-slate-200"><span id="bar-total-count" class="text-amber-300 font-cinzel">0</span>개</p>
+      </div>
+      <div class="h-8 w-px bg-slate-700"></div>
+      <div>
+        <p class="text-xs text-slate-400">총 결제 금액</p>
+        <p class="text-3xl font-black gold-gradient-text font-cinzel"><span id="bar-total-price">0</span>원</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 w-full md:w-auto">
+      <button onclick="resetCart()" class="px-4 py-3 rounded-lg border border-slate-700 bg-slate-800/80 text-xs font-bold text-slate-300 active:bg-slate-700">
+        초기화
+      </button>
+      <button onclick="openCheckoutModal()" id="btn-order" class="btn-lol-cta flex-1 md:flex-none px-10 py-3.5 rounded-lg text-lg font-black tracking-wider transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+        주문하기
+      </button>
+    </div>
+  </footer>
+
+  <!-- ================= MODAL: 결제 및 주문 창 ================= -->
+  <div id="checkout-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="w-full max-w-lg rounded-xl bg-[#091428] border-2 border-[#c8aa6e] p-6 text-slate-200 shadow-2xl relative">
+      <h3 class="text-xl font-black gold-gradient-text border-b border-[#785a28] pb-3 mb-4 flex items-center justify-between">
+        <span>결제 방식 선택</span>
+        <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-white text-xl font-bold">✕</button>
+      </h3>
+
+      <!-- 주문 요약 -->
+      <div id="order-summary-box" class="p-3 rounded bg-black/50 border border-slate-800 text-sm mb-4">
+        <!-- JS 렌더링 -->
+      </div>
+
+      <!-- 결제 수단 탭 -->
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <button onclick="setPayMethod('transfer')" id="tab-transfer" class="py-3 rounded border font-bold text-sm transition-all flex flex-col items-center gap-1 border-[#c8aa6e] bg-[#1e282d] text-amber-200">
+          <span>📱 계좌이체 / 토스</span>
+          <span class="text-[11px] opacity-80">(실시간 입금 대조)</span>
+        </button>
+        <button onclick="setPayMethod('cash')" id="tab-cash" class="py-3 rounded border font-bold text-sm transition-all flex flex-col items-center gap-1 border-slate-700 bg-slate-900 text-slate-400">
+          <span>💵 현금 결제</span>
+          <span class="text-[11px] text-red-400 font-bold">(거스름돈 없음!)</span>
+        </button>
+      </div>
+
+      <!-- 1. 계좌이체 안내 내용 -->
+      <div id="pay-content-transfer" class="space-y-3">
+        <div class="p-3 rounded bg-[#010a13] border border-[#785a28] flex justify-between items-center">
+          <div>
+            <p class="text-xs text-slate-400">송금 계좌 (토스/카카오페이 가능)</p>
+            <p id="display-bank-info" class="text-base font-bold text-amber-300">토스뱅크 1000-0000-0000</p>
+            <p id="display-account-name" class="text-xs text-slate-300">예금주: 동아리 대표</p>
+          </div>
+          <button onclick="copyBankAccount()" class="px-3 py-1.5 rounded text-xs font-bold bg-[#1e282d] border border-[#c8aa6e] text-amber-200 active:scale-95">
+            계좌 복사
+          </button>
+        </div>
+
+        <!-- 학번 및 입금자명 분리 입력 -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#c8aa6e] mb-1">학번 <span class="text-red-400">*</span></label>
+            <input type="text" id="input-student-id" placeholder="예: 20413" class="w-full px-3 py-2 rounded bg-black/80 border border-slate-700 text-slate-200 text-sm focus:border-[#c8aa6e] focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#c8aa6e] mb-1">입금자명 <span class="text-red-400">*</span></label>
+            <input type="text" id="input-depositor" placeholder="예: 홍길동" class="w-full px-3 py-2 rounded bg-black/80 border border-slate-700 text-slate-200 text-sm focus:border-[#c8aa6e] focus:outline-none">
+          </div>
+        </div>
+
+        <!-- 캡처본 사기 원천 차단 경고 -->
+        <div class="p-3 rounded bg-red-950/60 border border-red-700 text-xs text-red-200 leading-relaxed">
+          <p class="font-black text-red-300 flex items-center gap-1 mb-0.5">
+            🚨 캡처본 인증 절대 불가!
+          </p>
+          부스 총무 학생의 은행 <b>실시간 입금 알림(이름·금액)</b>과 직접 일치해야만 음료가 지급됩니다.
+        </div>
+      </div>
+
+      <!-- 2. 현금 결제 안내 내용 -->
+      <div id="pay-content-cash" class="space-y-3 hidden">
+        <div class="p-4 rounded bg-amber-950/40 border border-amber-600/80 text-center space-y-2">
+          <p class="text-base font-black text-amber-300">⚠️ 거스름돈이 준비되어 있지 않습니다!</p>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            원활한 진행을 위해 <b>1,000원권 지폐</b>를 정확하게 준비하여 부스 부원에게 직접 건네주세요.<br>
+            <span class="text-red-400 font-bold">(5,000원권 / 10,000원권은 잔돈이 없어 결제 불가합니다)</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- 모달 하단 버튼 -->
+      <div class="mt-5 flex gap-3">
+        <button onclick="closeCheckoutModal()" class="w-1/3 py-3 rounded-lg border border-slate-700 bg-slate-800 text-sm font-bold text-slate-300">
+          취소
+        </button>
+        <button onclick="completeOrder()" class="btn-lol-cta flex-1 py-3 rounded-lg text-base font-black tracking-wider">
+          주문 완료하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: 주문 완료 번호표 ================= -->
+  <div id="ticket-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-2xl bg-[#091428] border-2 border-[#c8aa6e] p-6 text-center text-slate-200 shadow-2xl relative">
+      <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-emerald-950 border border-emerald-500 flex items-center justify-center text-2xl text-emerald-400">
+        ✓
+      </div>
+      <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Order Completed</p>
+      <h4 class="text-4xl md:text-5xl font-black gold-gradient-text font-cinzel my-2" id="ticket-number">#001</h4>
+      <p class="text-sm font-bold text-amber-200 mb-1" id="ticket-items">체력 물약 1개</p>
+      <p class="text-xs text-slate-400" id="ticket-payer-info">주문자: 20413 홍길동</p>
+
+      <div class="mt-4 p-3 rounded bg-black/60 border border-slate-800 text-xs text-slate-300">
+        음료 부원에게 위 번호표를 보여주시면 즉시 시원한 물약을 드립니다!
+      </div>
+
+      <!-- 자동 리셋 카운트다운 게이지 -->
+      <div class="mt-5">
+        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+          <div id="reset-progress" class="bg-[#c8aa6e] h-full w-full transition-all duration-100 ease-linear"></div>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-2"><span id="reset-counter">5</span>초 뒤 첫 화면으로 자동 복귀합니다</p>
+      </div>
+
+      <button onclick="closeTicketModal()" class="mt-4 w-full py-2.5 rounded bg-slate-800 border border-slate-700 text-xs font-bold text-slate-300 hover:text-white">
+        즉시 닫기
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: 관리자 화면 (PIN: ty358801#) ================= -->
+  <div id="admin-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="w-full max-w-2xl rounded-xl bg-[#091428] border-2 border-[#c8aa6e] p-5 text-slate-200 max-h-[90vh] flex flex-col shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-3 mb-4">
+        <h3 class="text-lg font-black gold-gradient-text">부스 관리자 통계 및 설정</h3>
+        <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white font-bold text-lg">✕</button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto space-y-4 pr-1 text-xs">
+        <!-- 매출 현황 카드 -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div class="p-3 rounded bg-black/50 border border-slate-800">
+            <span class="text-slate-400">총 누적 매출</span>
+            <p id="adm-total-rev" class="text-lg font-black text-amber-300 font-cinzel">0원</p>
+          </div>
+          <div class="p-3 rounded bg-black/50 border border-slate-800">
+            <span class="text-slate-400">총 판매 잔수</span>
+            <p id="adm-total-qty" class="text-lg font-black text-white font-cinzel">0잔</p>
+          </div>
+          <div class="p-3 rounded bg-black/50 border border-slate-800">
+            <span class="text-slate-400">체력(아이스티)</span>
+            <p id="adm-peach-qty" class="text-lg font-black text-amber-400 font-cinzel">0잔</p>
+          </div>
+          <div class="p-3 rounded bg-black/50 border border-slate-800">
+            <span class="text-slate-400">충전형(에이드)</span>
+            <p id="adm-lemon-qty" class="text-lg font-black text-cyan-400 font-cinzel">0잔</p>
+          </div>
+        </div>
+
+        <!-- 결제 계좌 설정 -->
+        <div class="p-3 rounded bg-black/40 border border-slate-800 space-y-2">
+          <p class="font-bold text-slate-300">부스 입금 계좌정보 변경</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <input type="text" id="adm-bank-input" placeholder="은행 및 계좌번호" class="p-2 rounded bg-black border border-slate-700 text-slate-200">
+            <input type="text" id="adm-name-input" placeholder="예금주 성함" class="p-2 rounded bg-black border border-slate-700 text-slate-200">
+          </div>
+          <button onclick="saveBankConfig()" class="px-3 py-1.5 rounded bg-[#1e282d] border border-[#c8aa6e] text-amber-200 font-bold active:scale-95">
+            계좌정보 저장
+          </button>
+        </div>
+
+        <!-- 최근 주문 기록 표 -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <p class="font-bold text-slate-300">최근 실시간 주문 내역</p>
+            <button onclick="exportCSV()" class="px-2.5 py-1 rounded bg-emerald-950 border border-emerald-600 text-emerald-300 font-bold active:scale-95">
+              📥 엑셀(CSV) 저장
+            </button>
+          </div>
+          <div class="max-h-48 overflow-y-auto border border-slate-800 rounded bg-black/60">
+            <table class="w-full text-left border-collapse text-[11px]">
+              <thead class="bg-slate-900 sticky top-0 border-b border-slate-800 text-slate-400">
+                <tr>
+                  <th class="p-1.5">번호</th>
+                  <th class="p-1.5">시간</th>
+                  <th class="p-1.5">메뉴</th>
+                  <th class="p-1.5">결제</th>
+                  <th class="p-1.5">학번/입금자</th>
+                  <th class="p-1.5">금액</th>
+                </tr>
+              </thead>
+              <tbody id="adm-order-table">
+                <!-- JS 렌더링 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center">
+        <button onclick="resetAllStats()" class="px-3 py-1.5 rounded bg-red-950/80 border border-red-700 text-red-300 font-bold text-xs active:scale-95">
+          ⚠️ 데이터 전체 초기화
+        </button>
+        <button onclick="closeAdminModal()" class="px-4 py-1.5 rounded bg-slate-800 border border-slate-700 text-xs font-bold text-slate-300">
+          닫기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT ================= -->
+  <script>
+    // 상태 관리
+    const cart = { peach: 0, lemon: 0 };
+    const PRICE = 1000;
+    const ADMIN_PW = "ty358801#";
+
+    let store = {
+      bank: "토스뱅크 1000-0000-0000",
+      accountName: "동아리 대표",
+      orderSeq: 1,
+      orders: []
+    };
+
+    // 로컬 스토리지 불러오기
+    function loadStore() {
+      const saved = localStorage.getItem("lol_kiosk_store");
+      if (saved) {
+        try { store = JSON.parse(saved); } catch (e) {}
+      }
+      document.getElementById("display-bank-info").innerText = store.bank;
+      document.getElementById("display-account-name").innerText = `예금주: ${store.accountName}`;
+    }
+
+    function saveStore() {
+      localStorage.setItem("lol_kiosk_store", JSON.stringify(store));
+    }
+
+    // Web Audio API를 활용한 롤 아이템 구매 짤랑거리는 코인 사운드
+    function playLoLPurchaseSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+
+        const notes = [
+          { f: 987.77, t: 0.00, d: 0.18 }, // B5
+          { f: 1318.51, t: 0.05, d: 0.22 }, // E6
+          { f: 1975.53, t: 0.10, d: 0.35 }, // B6
+          { f: 2637.02, t: 0.14, d: 0.45 }  // E7 (금속 차임벨 하모닉)
+        ];
+
+        notes.forEach(n => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(n.f, ctx.currentTime + n.t);
+
+          gain.gain.setValueAtTime(0, ctx.currentTime + n.t);
+          gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + n.t + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + n.t + n.d);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + n.t);
+          osc.stop(ctx.currentTime + n.t + n.d + 0.05);
+        });
+      } catch (err) {}
+    }
+
+    // 장바구니 수량 조절
+    function changeQty(item, delta) {
+      if (delta > 0) {
+        cart[item] += 1;
+        playLoLPurchaseSound(); // + 버튼 클릭 시 롤 구매음 재생
+      } else {
+        if (cart[item] > 0) cart[item] -= 1;
+      }
+      updateUI();
+    }
+
+    function resetCart() {
+      cart.peach = 0;
+      cart.lemon = 0;
+      updateUI();
+    }
+
+    function updateUI() {
+      document.getElementById("qty-peach").innerText = cart.peach;
+      document.getElementById("qty-lemon").innerText = cart.lemon;
+      const totalCount = cart.peach + cart.lemon;
+      const totalPrice = totalCount * PRICE;
+
+      document.getElementById("bar-total-count").innerText = totalCount;
+      document.getElementById("bar-total-price").innerText = totalPrice.toLocaleString();
+      document.getElementById("btn-order").disabled = (totalCount === 0);
+    }
+
+    // 결제 모달 제어
+    let curMethod = 'transfer';
+    function openCheckoutModal() {
+      if (cart.peach + cart.lemon === 0) return;
+      playLoLPurchaseSound();
+
+      let summaryHtml = "";
+      if (cart.peach > 0) summaryHtml += `<div class="flex justify-between py-1"><span>체력 물약 (복숭아) ${cart.peach}잔</span><span class="font-bold text-amber-300 font-cinzel">${(cart.peach * PRICE).toLocaleString()}원</span></div>`;
+      if (cart.lemon > 0) summaryHtml += `<div class="flex justify-between py-1"><span>충전형 물약 (블루레몬) ${cart.lemon}잔</span><span class="font-bold text-cyan-300 font-cinzel">${(cart.lemon * PRICE).toLocaleString()}원</span></div>`;
+      summaryHtml += `<div class="flex justify-between pt-2 border-t border-slate-700 font-black text-base"><span>합계</span><span class="gold-gradient-text font-cinzel">${((cart.peach + cart.lemon) * PRICE).toLocaleString()}원</span></div>`;
+      document.getElementById("order-summary-box").innerHTML = summaryHtml;
+
+      document.getElementById("input-student-id").value = "";
+      document.getElementById("input-depositor").value = "";
+      setPayMethod('transfer');
+
+      const modal = document.getElementById("checkout-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function closeCheckoutModal() {
+      const modal = document.getElementById("checkout-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function setPayMethod(m) {
+      curMethod = m;
+      const tBtn = document.getElementById("tab-transfer");
+      const cBtn = document.getElementById("tab-cash");
+      const tContent = document.getElementById("pay-content-transfer");
+      const cContent = document.getElementById("pay-content-cash");
+
+      if (m === 'transfer') {
+        tBtn.className = "py-3 rounded border font-bold text-sm transition-all flex flex-col items-center gap-1 border-[#c8aa6e] bg-[#1e282d] text-amber-200";
+        cBtn.className = "py-3 rounded border font-bold text-sm transition-all flex flex-col items-center gap-1 border-slate-700 bg-slate-900 text-slate-400";
+        tContent.classList.remove("hidden");
+        cContent.classList.add("hidden");
+      } else {
+        cBtn.className = "py-3 rounded border font-bold text-sm transition-all flex flex-col items-center gap-1 border-red-500 bg-red-950/40 text-red-200";
+        tBtn.className = "py-3 rounded border font-bold text-sm transition-all flex flex-col items-center gap-1 border-slate-700 bg-slate-900 text-slate-400";
+        cContent.classList.remove("hidden");
+        tContent.classList.add("hidden");
+      }
+    }
+
+    function copyBankAccount() {
+      navigator.clipboard.writeText(store.bank).then(() => {
+        alert("계좌번호가 복사되었습니다!");
+      });
+    }
+
+    // 주문 완료 처리
+    let resetTimer = null;
+    let resetInterval = null;
+
+    function completeOrder() {
+      let studentId = "-";
+      let depositor = "-";
+
+      if (curMethod === 'transfer') {
+        studentId = document.getElementById("input-student-id").value.trim();
+        depositor = document.getElementById("input-depositor").value.trim();
+        if (!studentId) {
+          alert("학번(예: 20413)을 입력해 주세요!");
+          document.getElementById("input-student-id").focus();
+          return;
+        }
+        if (!depositor) {
+          alert("실시간 입금 대조를 위해 입금자명을 입력해 주세요!");
+          document.getElementById("input-depositor").focus();
+          return;
+        }
+      }
+
+      playLoLPurchaseSound();
+
+      const orderNo = `#${String(store.orderSeq).padStart(3, '0')}`;
+      store.orderSeq += 1;
+
+      const orderData = {
+        no: orderNo,
+        time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        peach: cart.peach,
+        lemon: cart.lemon,
+        total: (cart.peach + cart.lemon) * PRICE,
+        method: curMethod === 'transfer' ? '계좌이체' : '현금',
+        studentId: studentId,
+        depositor: depositor
+      };
+
+      store.orders.unshift(orderData);
+      saveStore();
+      closeCheckoutModal();
+
+      // 번호표 모달 출력
+      document.getElementById("ticket-number").innerText = orderNo;
+      let itemStr = [];
+      if (cart.peach > 0) itemStr.push(`체력 물약 ${cart.peach}개`);
+      if (cart.lemon > 0) itemStr.push(`충전형 물약 ${cart.lemon}개`);
+      document.getElementById("ticket-items").innerText = itemStr.join(", ");
+      document.getElementById("ticket-payer-info").innerText = curMethod === 'transfer' 
+        ? `주문자 정보: ${studentId} ${depositor} (계좌이체)` 
+        : `결제 방식: 현금 결제 (거스름돈 없음)`;
+
+      resetCart();
+
+      const tModal = document.getElementById("ticket-modal");
+      tModal.classList.remove("hidden");
+      tModal.classList.add("flex");
+
+      // 5초 자동 복귀
+      let remainSec = 5;
+      document.getElementById("reset-counter").innerText = remainSec;
+      const bar = document.getElementById("reset-progress");
+      bar.style.width = "100%";
+
+      clearInterval(resetInterval);
+      clearTimeout(resetTimer);
+
+      const startTime = Date.now();
+      resetInterval = setInterval(() => {
+        const elapsed = (Date.now() - startTime) / 1000;
+        const pct = Math.max(0, 100 - (elapsed / 5) * 100);
+        bar.style.width = `${pct}%`;
+        const left = Math.ceil(5 - elapsed);
+        if (left >= 0) document.getElementById("reset-counter").innerText = left;
+      }, 50);
+
+      resetTimer = setTimeout(() => {
+        closeTicketModal();
+      }, 5000);
+    }
+
+    function closeTicketModal() {
+      clearInterval(resetInterval);
+      clearTimeout(resetTimer);
+      const tModal = document.getElementById("ticket-modal");
+      tModal.classList.add("hidden");
+      tModal.classList.remove("flex");
+    }
+
+    // 관리자 모드
+    function openAdminModal() {
+      const input = prompt("관리자 인증 비밀번호를 입력하세요:");
+      if (input !== ADMIN_PW) {
+        if (input !== null) alert("비밀번호가 올바르지 않습니다.");
+        return;
+      }
+
+      document.getElementById("adm-bank-input").value = store.bank;
+      document.getElementById("adm-name-input").value = store.accountName;
+
+      renderAdminStats();
+      const aModal = document.getElementById("admin-modal");
+      aModal.classList.remove("hidden");
+      aModal.classList.add("flex");
+    }
+
+    function closeAdminModal() {
+      const aModal = document.getElementById("admin-modal");
+      aModal.classList.add("hidden");
+      aModal.classList.remove("flex");
+    }
+
+    function renderAdminStats() {
+      let totalRev = 0;
+      let totalPeach = 0;
+      let totalLemon = 0;
+
+      const tbody = document.getElementById("adm-order-table");
+      tbody.innerHTML = "";
+
+      store.orders.forEach(o => {
+        totalRev += o.total;
+        totalPeach += o.peach;
+        totalLemon += o.lemon;
+
+        const row = document.createElement("tr");
+        row.className = "border-b border-slate-800/80 hover:bg-slate-800/30";
+        row.innerHTML = `
+          <td class="p-1.5 font-bold font-cinzel text-amber-300">${o.no}</td>
+          <td class="p-1.5 text-slate-400">${o.time}</td>
+          <td class="p-1.5">체력:${o.peach} / 충전:${o.lemon}</td>
+          <td class="p-1.5">${o.method}</td>
+          <td class="p-1.5 text-[#f0e6d2]">${o.studentId} ${o.depositor}</td>
+          <td class="p-1.5 font-cinzel text-right font-bold">${o.total.toLocaleString()}원</td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.getElementById("adm-total-rev").innerText = `${totalRev.toLocaleString()}원`;
+      document.getElementById("adm-total-qty").innerText = `${totalPeach + totalLemon}잔`;
+      document.getElementById("adm-peach-qty").innerText = `${totalPeach}잔`;
+      document.getElementById("adm-lemon-qty").innerText = `${totalLemon}잔`;
+    }
+
+    function saveBankConfig() {
+      const b = document.getElementById("adm-bank-input").value.trim();
+      const n = document.getElementById("adm-name-input").value.trim();
+      if (b) store.bank = b;
+      if (n) store.accountName = n;
+      saveStore();
+      loadStore();
+      alert("계좌정보가 성공적으로 저장되었습니다!");
+    }
+
+    function exportCSV() {
+      if (store.orders.length === 0) {
+        alert("내보낼 주문 내역이 없습니다.");
+        return;
+      }
+      let csv = "\uFEFF주문번호,시간,체력물약(개),충전형물약(개),결제방식,학번,입금자명,결제금액\n";
+      store.orders.forEach(o => {
+        csv += `"${o.no}","${o.time}",${o.peach},${o.lemon},"${o.method}","${o.studentId}","${o.depositor}",${o.total}\n`;
+      });
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `동아리축제_키오스크_매출정산_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function resetAllStats() {
+      if (confirm("정말로 모든 매출 데이터와 주문 내역을 초기화하시겠습니까?")) {
+        store.orderSeq = 1;
+        store.orders = [];
+        saveStore();
+        renderAdminStats();
+        alert("초기화되었습니다.");
+      }
+    }
+
+    // 전체화면 및 화면 꺼짐 방지(Wake Lock)
+    async function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+        try {
+          if ('wakeLock' in navigator) await navigator.wakeLock.request('screen');
+        } catch (e) {}
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    // 초기 실행
+    window.addEventListener("DOMContentLoaded", () => {
+      loadStore();
+      updateUI();
+    });
+  </script>
+</body>
+</html>
