@@ -80,13 +80,19 @@
       </div>
     </div>
 
-    <!-- 우측 상단 유틸리티 버튼 -->
+    <!-- 우측 상단 유틸리티 버튼 분리 -->
     <div class="flex items-center gap-2">
       <button onclick="toggleFullscreen()" class="px-3 py-1.5 rounded text-xs font-semibold bg-[#111a1e] border border-[#3c3c41] text-[#a09b8c] hover:text-[#f0e6d2] active:bg-[#1e282d]">
         ⛶ 전체화면
       </button>
-      <button onclick="openAdminModal()" class="px-3 py-1.5 rounded text-xs font-semibold bg-[#111a1e] border border-[#3c3c41] text-[#a09b8c] hover:text-[#f0e6d2] active:bg-[#1e282d]">
-        ⚙️ 관리
+      <!-- 분리 1: 실시간 주문 현황 (대기 건수 배지 포함) -->
+      <button onclick="openOrdersModal()" class="relative px-3 py-1.5 rounded text-xs font-bold bg-[#111a1e] border border-[#c8aa6e] text-amber-200 hover:text-white active:bg-[#1e282d] flex items-center gap-1.5 shadow-md">
+        <span>📋 주문 현황</span>
+        <span id="header-pending-badge" class="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-amber-500 text-black">0</span>
+      </button>
+      <!-- 분리 2: 부스 통계 및 설정 -->
+      <button onclick="openStatsModal()" class="px-3 py-1.5 rounded text-xs font-semibold bg-[#111a1e] border border-[#3c3c41] text-[#a09b8c] hover:text-[#f0e6d2] active:bg-[#1e282d]">
+        📊 통계 · 설정
       </button>
     </div>
   </header>
@@ -98,7 +104,6 @@
     <div class="lol-card rounded-lg p-5 flex flex-col justify-between hextech-border">
       <div>
         <div class="flex gap-4 items-start">
-          <!-- 롤 체력 물약 인게임 이미지 -->
           <div class="relative w-24 h-24 flex-shrink-0 rounded border-2 border-[#785a28] bg-black overflow-hidden shadow-md">
             <img src="https://ddragon.leagueoflegends.com/cdn/14.23.1/img/item/2003.png" 
                  alt="체력 물약" 
@@ -110,7 +115,6 @@
             <div class="flex justify-between items-start">
               <div>
                 <h2 class="text-2xl font-black text-[#f0e6d2] tracking-wide">체력 물약</h2>
-                <!-- 강조된 실제 음료명 -->
                 <p class="text-lg md:text-xl font-black text-amber-400 mt-0.5 tracking-tight drop-shadow">
                   (복숭아 아이스티)
                 </p>
@@ -123,7 +127,6 @@
           </div>
         </div>
 
-        <!-- 롤 인게임 패러디 툴팁 설명 박스 -->
         <div class="mt-4 p-3 rounded bg-[#010a13]/80 border border-[#1e2328] text-xs leading-relaxed space-y-1">
           <p class="text-[#c8aa6e] font-semibold flex items-center gap-1">
             <span>⚡</span> <span class="text-amber-200">사용:</span> 축제를 즐기느라 방전된 체력과 당분을 <span class="text-emerald-400 font-bold">15초에 걸쳐 120 회복</span>합니다.
@@ -137,7 +140,6 @@
         </div>
       </div>
 
-      <!-- 수량 컨트롤러 -->
       <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between">
         <span class="text-xs text-slate-400 font-medium">선택 수량</span>
         <div class="flex items-center gap-2">
@@ -156,7 +158,6 @@
     <div class="lol-card rounded-lg p-5 flex flex-col justify-between hextech-border">
       <div>
         <div class="flex gap-4 items-start">
-          <!-- 롤 충전형 물약 인게임 이미지 -->
           <div class="relative w-24 h-24 flex-shrink-0 rounded border-2 border-[#785a28] bg-black overflow-hidden shadow-md">
             <img src="https://ddragon.leagueoflegends.com/cdn/14.23.1/img/item/2031.png" 
                  alt="충전형 물약" 
@@ -168,7 +169,6 @@
             <div class="flex justify-between items-start">
               <div>
                 <h2 class="text-2xl font-black text-[#f0e6d2] tracking-wide">충전형 물약</h2>
-                <!-- 강조된 실제 음료명 -->
                 <p class="text-lg md:text-xl font-black text-cyan-400 mt-0.5 tracking-tight drop-shadow">
                   (블루레몬에이드)
                 </p>
@@ -181,7 +181,6 @@
           </div>
         </div>
 
-        <!-- 롤 인게임 패러디 툴팁 설명 박스 -->
         <div class="mt-4 p-3 rounded bg-[#010a13]/80 border border-[#1e2328] text-xs leading-relaxed space-y-1">
           <p class="text-[#0ac8b9] font-semibold flex items-center gap-1">
             <span>⚡</span> <span class="text-cyan-200">사용 시:</span> 12초에 걸쳐 갈증을 해소하고 <span class="text-emerald-400 font-bold">100의 청량한 활력</span>을 충전합니다.
@@ -195,7 +194,6 @@
         </div>
       </div>
 
-      <!-- 수량 컨트롤러 -->
       <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between">
         <span class="text-xs text-slate-400 font-medium">선택 수량</span>
         <div class="flex items-center gap-2">
@@ -244,12 +242,8 @@
         <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-white text-xl font-bold">✕</button>
       </h3>
 
-      <!-- 주문 요약 -->
-      <div id="order-summary-box" class="p-3 rounded bg-black/50 border border-slate-800 text-sm mb-4">
-        <!-- JS 렌더링 -->
-      </div>
+      <div id="order-summary-box" class="p-3 rounded bg-black/50 border border-slate-800 text-sm mb-4"></div>
 
-      <!-- 결제 수단 탭 -->
       <div class="grid grid-cols-2 gap-3 mb-4">
         <button onclick="setPayMethod('transfer')" id="tab-transfer" class="py-3 rounded border font-bold text-sm transition-all flex flex-col items-center gap-1 border-[#c8aa6e] bg-[#1e282d] text-amber-200">
           <span>📱 계좌이체 / 토스</span>
@@ -261,7 +255,7 @@
         </button>
       </div>
 
-      <!-- 1. 계좌이체 안내 내용 -->
+      <!-- 계좌이체 -->
       <div id="pay-content-transfer" class="space-y-3">
         <div class="p-3 rounded bg-[#010a13] border border-[#785a28] flex justify-between items-center">
           <div>
@@ -274,11 +268,10 @@
           </button>
         </div>
 
-        <!-- 학번 및 입금자명 분리 입력 -->
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-bold text-[#c8aa6e] mb-1">학번 <span class="text-red-400">*</span></label>
-            <input type="text" id="input-student-id" placeholder="예: 20413" class="w-full px-3 py-2 rounded bg-black/80 border border-slate-700 text-slate-200 text-sm focus:border-[#c8aa6e] focus:outline-none">
+            <input type="text" id="input-student-id" placeholder="예: 20101" class="w-full px-3 py-2 rounded bg-black/80 border border-slate-700 text-slate-200 text-sm focus:border-[#c8aa6e] focus:outline-none">
           </div>
           <div>
             <label class="block text-xs font-bold text-[#c8aa6e] mb-1">입금자명 <span class="text-red-400">*</span></label>
@@ -286,7 +279,6 @@
           </div>
         </div>
 
-        <!-- 캡처본 사기 원천 차단 경고 -->
         <div class="p-3 rounded bg-red-950/60 border border-red-700 text-xs text-red-200 leading-relaxed">
           <p class="font-black text-red-300 flex items-center gap-1 mb-0.5">
             🚨 캡처본 인증 절대 불가!
@@ -295,7 +287,7 @@
         </div>
       </div>
 
-      <!-- 2. 현금 결제 안내 내용 -->
+      <!-- 현금 결제 -->
       <div id="pay-content-cash" class="space-y-3 hidden">
         <div class="p-4 rounded bg-amber-950/40 border border-amber-600/80 text-center space-y-2">
           <p class="text-base font-black text-amber-300">⚠️ 거스름돈이 준비되어 있지 않습니다!</p>
@@ -306,7 +298,6 @@
         </div>
       </div>
 
-      <!-- 모달 하단 버튼 -->
       <div class="mt-5 flex gap-3">
         <button onclick="closeCheckoutModal()" class="w-1/3 py-3 rounded-lg border border-slate-700 bg-slate-800 text-sm font-bold text-slate-300">
           취소
@@ -327,13 +318,12 @@
       <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Order Completed</p>
       <h4 class="text-4xl md:text-5xl font-black gold-gradient-text font-cinzel my-2" id="ticket-number">#001</h4>
       <p class="text-sm font-bold text-amber-200 mb-1" id="ticket-items">체력 물약 1개</p>
-      <p class="text-xs text-slate-400" id="ticket-payer-info">주문자: 20413 홍길동</p>
+      <p class="text-xs text-slate-400" id="ticket-payer-info">주문자: 20101 홍길동</p>
 
       <div class="mt-4 p-3 rounded bg-black/60 border border-slate-800 text-xs text-slate-300">
         음료 부원에게 위 번호표를 보여주시면 즉시 시원한 물약을 드립니다!
       </div>
 
-      <!-- 자동 리셋 카운트다운 게이지 -->
       <div class="mt-5">
         <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
           <div id="reset-progress" class="bg-[#c8aa6e] h-full w-full transition-all duration-100 ease-linear"></div>
@@ -347,72 +337,113 @@
     </div>
   </div>
 
-  <!-- ================= MODAL: 관리자 화면 (PIN: ty358801#) ================= -->
-  <div id="admin-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4">
+  <!-- ================= MODAL 1: 실시간 주문 현황 (음료 배부용) ================= -->
+  <div id="orders-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="w-full max-w-3xl rounded-xl bg-[#091428] border-2 border-[#c8aa6e] p-5 text-slate-200 max-h-[90vh] flex flex-col shadow-2xl">
+      <div class="flex justify-between items-center border-b border-[#785a28]/60 pb-3 mb-3">
+        <div class="flex items-center gap-2">
+          <h3 class="text-lg font-black gold-gradient-text">📋 실시간 주문 현황 및 배부</h3>
+          <span id="modal-pending-badge" class="px-2 py-0.5 rounded text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">대기 0건</span>
+        </div>
+        <button onclick="closeOrdersModal()" class="text-slate-400 hover:text-white font-bold text-xl px-2">✕</button>
+      </div>
+
+      <!-- 상태 필터 탭 -->
+      <div class="flex gap-2 mb-3">
+        <button onclick="setOrderFilter('all')" id="filter-all" class="px-3 py-1.5 rounded text-xs font-bold border border-[#c8aa6e] bg-[#1e282d] text-amber-200">
+          전체 보기
+        </button>
+        <button onclick="setOrderFilter('pending')" id="filter-pending" class="px-3 py-1.5 rounded text-xs font-bold border border-slate-700 bg-black/50 text-slate-400">
+          대기중 ⏳
+        </button>
+        <button onclick="setOrderFilter('done')" id="filter-done" class="px-3 py-1.5 rounded text-xs font-bold border border-slate-700 bg-black/50 text-slate-400">
+          수령완료 ✅
+        </button>
+      </div>
+
+      <!-- 주문 목록 테이블 -->
+      <div class="flex-1 overflow-y-auto border border-slate-800 rounded bg-black/60">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead class="bg-slate-900 sticky top-0 border-b border-slate-800 text-slate-400">
+            <tr>
+              <th class="p-2.5">주문번호</th>
+              <th class="p-2.5">시간</th>
+              <th class="p-2.5">학번 / 이름</th>
+              <th class="p-2.5">주문 내역</th>
+              <th class="p-2.5">결제</th>
+              <th class="p-2.5">금액</th>
+              <th class="p-2.5 text-center">처리 상태</th>
+            </tr>
+          </thead>
+          <tbody id="orders-table-body">
+            <!-- JS 렌더링 -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-3 pt-2 text-[11px] text-slate-400 flex justify-between items-center">
+        <span>💡 [처리 상태] 버튼을 터치하면 '대기중 ⏳'과 '수령완료 ✅' 상태가 즉시 전환됩니다.</span>
+        <button onclick="closeOrdersModal()" class="px-4 py-1.5 rounded bg-slate-800 border border-slate-700 text-xs font-bold text-slate-300">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: 부스 통계 및 설정 ================= -->
+  <div id="stats-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4">
     <div class="w-full max-w-2xl rounded-xl bg-[#091428] border-2 border-[#c8aa6e] p-5 text-slate-200 max-h-[90vh] flex flex-col shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-700 pb-3 mb-4">
-        <h3 class="text-lg font-black gold-gradient-text">부스 관리자 통계 및 설정</h3>
-        <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white font-bold text-lg">✕</button>
+      <div class="flex justify-between items-center border-b border-[#785a28]/60 pb-3 mb-4">
+        <h3 class="text-lg font-black gold-gradient-text">📊 부스 매출 통계 및 관리 설정</h3>
+        <button onclick="closeStatsModal()" class="text-slate-400 hover:text-white font-bold text-xl px-2">✕</button>
       </div>
 
       <div class="flex-1 overflow-y-auto space-y-4 pr-1 text-xs">
-        <!-- 매출 현황 카드 -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-          <div class="p-3 rounded bg-black/50 border border-slate-800">
-            <span class="text-slate-400">총 누적 매출</span>
-            <p id="adm-total-rev" class="text-lg font-black text-amber-300 font-cinzel">0원</p>
+        <!-- 4개 통계 카드 -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+          <div class="p-3.5 rounded-lg bg-black/60 border border-slate-800 shadow">
+            <span class="text-slate-400 block mb-1">총 누적 매출</span>
+            <p id="stat-total-rev" class="text-xl font-black text-amber-300 font-cinzel">0원</p>
           </div>
-          <div class="p-3 rounded bg-black/50 border border-slate-800">
-            <span class="text-slate-400">총 판매 잔수</span>
-            <p id="adm-total-qty" class="text-lg font-black text-white font-cinzel">0잔</p>
+          <div class="p-3.5 rounded-lg bg-black/60 border border-slate-800 shadow">
+            <span class="text-slate-400 block mb-1">총 판매 잔수</span>
+            <p id="stat-total-qty" class="text-xl font-black text-white font-cinzel">0잔</p>
           </div>
-          <div class="p-3 rounded bg-black/50 border border-slate-800">
-            <span class="text-slate-400">체력(아이스티)</span>
-            <p id="adm-peach-qty" class="text-lg font-black text-amber-400 font-cinzel">0잔</p>
+          <div class="p-3.5 rounded-lg bg-black/60 border border-slate-800 shadow">
+            <span class="text-slate-400 block mb-1">체력(복숭아)</span>
+            <p id="stat-peach-qty" class="text-xl font-black text-amber-400 font-cinzel">0잔</p>
           </div>
-          <div class="p-3 rounded bg-black/50 border border-slate-800">
-            <span class="text-slate-400">충전형(에이드)</span>
-            <p id="adm-lemon-qty" class="text-lg font-black text-cyan-400 font-cinzel">0잔</p>
+          <div class="p-3.5 rounded-lg bg-black/60 border border-slate-800 shadow">
+            <span class="text-slate-400 block mb-1">충전형(에이드)</span>
+            <p id="stat-lemon-qty" class="text-xl font-black text-cyan-400 font-cinzel">0잔</p>
           </div>
         </div>
 
+        <!-- 엑셀 다운로드 카드 -->
+        <div class="p-3.5 rounded-lg bg-black/50 border border-slate-800 flex justify-between items-center">
+          <div>
+            <p class="font-bold text-slate-200">주문 장부 엑셀 내보내기</p>
+            <p class="text-[11px] text-slate-400">축제 정산을 위해 전체 주문 데이터를 CSV 파일로 저장합니다.</p>
+          </div>
+          <button onclick="exportCSV()" class="px-3.5 py-2 rounded bg-emerald-950 border border-emerald-600 text-emerald-300 font-bold active:scale-95 shadow">
+            📥 엑셀(CSV) 다운로드
+          </button>
+        </div>
+
         <!-- 결제 계좌 설정 -->
-        <div class="p-3 rounded bg-black/40 border border-slate-800 space-y-2">
-          <p class="font-bold text-slate-300">부스 입금 계좌정보 변경</p>
+        <div class="p-3.5 rounded-lg bg-black/50 border border-slate-800 space-y-2.5">
+          <p class="font-bold text-slate-200">부스 입금 계좌정보 설정</p>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <input type="text" id="adm-bank-input" placeholder="은행 및 계좌번호" class="p-2 rounded bg-black border border-slate-700 text-slate-200">
-            <input type="text" id="adm-name-input" placeholder="예금주 성함" class="p-2 rounded bg-black border border-slate-700 text-slate-200">
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">은행 및 계좌번호</label>
+              <input type="text" id="stat-bank-input" class="w-full p-2 rounded bg-black border border-slate-700 text-slate-200">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">예금주 성함</label>
+              <input type="text" id="stat-name-input" class="w-full p-2 rounded bg-black border border-slate-700 text-slate-200">
+            </div>
           </div>
           <button onclick="saveBankConfig()" class="px-3 py-1.5 rounded bg-[#1e282d] border border-[#c8aa6e] text-amber-200 font-bold active:scale-95">
             계좌정보 저장
           </button>
-        </div>
-
-        <!-- 최근 주문 기록 표 -->
-        <div>
-          <div class="flex justify-between items-center mb-1">
-            <p class="font-bold text-slate-300">최근 실시간 주문 내역</p>
-            <button onclick="exportCSV()" class="px-2.5 py-1 rounded bg-emerald-950 border border-emerald-600 text-emerald-300 font-bold active:scale-95">
-              📥 엑셀(CSV) 저장
-            </button>
-          </div>
-          <div class="max-h-48 overflow-y-auto border border-slate-800 rounded bg-black/60">
-            <table class="w-full text-left border-collapse text-[11px]">
-              <thead class="bg-slate-900 sticky top-0 border-b border-slate-800 text-slate-400">
-                <tr>
-                  <th class="p-1.5">번호</th>
-                  <th class="p-1.5">시간</th>
-                  <th class="p-1.5">메뉴</th>
-                  <th class="p-1.5">결제</th>
-                  <th class="p-1.5">학번/입금자</th>
-                  <th class="p-1.5">금액</th>
-                </tr>
-              </thead>
-              <tbody id="adm-order-table">
-                <!-- JS 렌더링 -->
-              </tbody>
-            </table>
-          </div>
         </div>
       </div>
 
@@ -420,7 +451,7 @@
         <button onclick="resetAllStats()" class="px-3 py-1.5 rounded bg-red-950/80 border border-red-700 text-red-300 font-bold text-xs active:scale-95">
           ⚠️ 데이터 전체 초기화
         </button>
-        <button onclick="closeAdminModal()" class="px-4 py-1.5 rounded bg-slate-800 border border-slate-700 text-xs font-bold text-slate-300">
+        <button onclick="closeStatsModal()" class="px-4 py-1.5 rounded bg-slate-800 border border-slate-700 text-xs font-bold text-slate-300">
           닫기
         </button>
       </div>
@@ -429,7 +460,6 @@
 
   <!-- ================= JAVASCRIPT ================= -->
   <script>
-    // 상태 관리
     const cart = { peach: 0, lemon: 0 };
     const PRICE = 1000;
     const ADMIN_PW = "ty358801#";
@@ -441,7 +471,8 @@
       orders: []
     };
 
-    // 로컬 스토리지 불러오기
+    let currentOrderFilter = 'all';
+
     function loadStore() {
       const saved = localStorage.getItem("lol_kiosk_store");
       if (saved) {
@@ -449,13 +480,38 @@
       }
       document.getElementById("display-bank-info").innerText = store.bank;
       document.getElementById("display-account-name").innerText = `예금주: ${store.accountName}`;
+      updatePendingBadge();
     }
 
     function saveStore() {
       localStorage.setItem("lol_kiosk_store", JSON.stringify(store));
+      updatePendingBadge();
     }
 
-    // Web Audio API를 활용한 롤 아이템 구매 짤랑거리는 코인 사운드
+    function updatePendingBadge() {
+      const pendingCount = store.orders.filter(o => o.status === '대기중').length;
+      const hBadge = document.getElementById("header-pending-badge");
+      if (hBadge) hBadge.innerText = pendingCount;
+      const mBadge = document.getElementById("modal-pending-badge");
+      if (mBadge) mBadge.innerText = `대기 ${pendingCount}건`;
+    }
+
+    // 관리자 인증 헬퍼 (세션 동안 인증 유지)
+    function authAdmin(callback) {
+      if (sessionStorage.getItem("kiosk_authed") === "true") {
+        callback();
+        return;
+      }
+      const input = prompt("관리자 인증 비밀번호를 입력하세요:");
+      if (input === ADMIN_PW) {
+        sessionStorage.setItem("kiosk_authed", "true");
+        callback();
+      } else if (input !== null) {
+        alert("비밀번호가 올바르지 않습니다.");
+      }
+    }
+
+    // 롤 아이템 구매 코인 효과음 (Web Audio API)
     function playLoLPurchaseSound() {
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -464,10 +520,10 @@
         if (ctx.state === 'suspended') ctx.resume();
 
         const notes = [
-          { f: 987.77, t: 0.00, d: 0.18 }, // B5
-          { f: 1318.51, t: 0.05, d: 0.22 }, // E6
-          { f: 1975.53, t: 0.10, d: 0.35 }, // B6
-          { f: 2637.02, t: 0.14, d: 0.45 }  // E7 (금속 차임벨 하모닉)
+          { f: 987.77, t: 0.00, d: 0.18 },
+          { f: 1318.51, t: 0.05, d: 0.22 },
+          { f: 1975.53, t: 0.10, d: 0.35 },
+          { f: 2637.02, t: 0.14, d: 0.45 }
         ];
 
         notes.forEach(n => {
@@ -488,11 +544,10 @@
       } catch (err) {}
     }
 
-    // 장바구니 수량 조절
     function changeQty(item, delta) {
       if (delta > 0) {
         cart[item] += 1;
-        playLoLPurchaseSound(); // + 버튼 클릭 시 롤 구매음 재생
+        playLoLPurchaseSound();
       } else {
         if (cart[item] > 0) cart[item] -= 1;
       }
@@ -516,7 +571,7 @@
       document.getElementById("btn-order").disabled = (totalCount === 0);
     }
 
-    // 결제 모달 제어
+    // 주문 및 결제 모달
     let curMethod = 'transfer';
     function openCheckoutModal() {
       if (cart.peach + cart.lemon === 0) return;
@@ -569,7 +624,6 @@
       });
     }
 
-    // 주문 완료 처리
     let resetTimer = null;
     let resetInterval = null;
 
@@ -581,7 +635,7 @@
         studentId = document.getElementById("input-student-id").value.trim();
         depositor = document.getElementById("input-depositor").value.trim();
         if (!studentId) {
-          alert("학번(예: 20413)을 입력해 주세요!");
+          alert("학번(예: 20101)을 입력해 주세요!");
           document.getElementById("input-student-id").focus();
           return;
         }
@@ -597,27 +651,30 @@
       const orderNo = `#${String(store.orderSeq).padStart(3, '0')}`;
       store.orderSeq += 1;
 
+      let itemDesc = [];
+      if (cart.peach > 0) itemDesc.push(`체력 물약 ${cart.peach}개`);
+      if (cart.lemon > 0) itemDesc.push(`충전형 물약 ${cart.lemon}개`);
+
       const orderData = {
+        id: Date.now(),
         no: orderNo,
         time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
         peach: cart.peach,
         lemon: cart.lemon,
+        summary: itemDesc.join(', '),
         total: (cart.peach + cart.lemon) * PRICE,
         method: curMethod === 'transfer' ? '계좌이체' : '현금',
         studentId: studentId,
-        depositor: depositor
+        depositor: depositor,
+        status: '대기중'
       };
 
       store.orders.unshift(orderData);
       saveStore();
       closeCheckoutModal();
 
-      // 번호표 모달 출력
       document.getElementById("ticket-number").innerText = orderNo;
-      let itemStr = [];
-      if (cart.peach > 0) itemStr.push(`체력 물약 ${cart.peach}개`);
-      if (cart.lemon > 0) itemStr.push(`충전형 물약 ${cart.lemon}개`);
-      document.getElementById("ticket-items").innerText = itemStr.join(", ");
+      document.getElementById("ticket-items").innerText = orderData.summary;
       document.getElementById("ticket-payer-info").innerText = curMethod === 'transfer' 
         ? `주문자 정보: ${studentId} ${depositor} (계좌이체)` 
         : `결제 방식: 현금 결제 (거스름돈 없음)`;
@@ -628,7 +685,6 @@
       tModal.classList.remove("hidden");
       tModal.classList.add("flex");
 
-      // 5초 자동 복귀
       let remainSec = 5;
       document.getElementById("reset-counter").innerText = remainSec;
       const bar = document.getElementById("reset-progress");
@@ -659,64 +715,117 @@
       tModal.classList.remove("flex");
     }
 
-    // 관리자 모드
-    function openAdminModal() {
-      const input = prompt("관리자 인증 비밀번호를 입력하세요:");
-      if (input !== ADMIN_PW) {
-        if (input !== null) alert("비밀번호가 올바르지 않습니다.");
+    // ================= [창 1] 실시간 주문 현황 =================
+    function openOrdersModal() {
+      authAdmin(() => {
+        renderOrdersTable();
+        const m = document.getElementById("orders-modal");
+        m.classList.remove("hidden");
+        m.classList.add("flex");
+      });
+    }
+
+    function closeOrdersModal() {
+      const m = document.getElementById("orders-modal");
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+    }
+
+    function setOrderFilter(f) {
+      currentOrderFilter = f;
+      const fAll = document.getElementById("filter-all");
+      const fPending = document.getElementById("filter-pending");
+      const fDone = document.getElementById("filter-done");
+
+      fAll.className = f === 'all' ? "px-3 py-1.5 rounded text-xs font-bold border border-[#c8aa6e] bg-[#1e282d] text-amber-200" : "px-3 py-1.5 rounded text-xs font-bold border border-slate-700 bg-black/50 text-slate-400";
+      fPending.className = f === 'pending' ? "px-3 py-1.5 rounded text-xs font-bold border border-amber-500 bg-amber-950/40 text-amber-300" : "px-3 py-1.5 rounded text-xs font-bold border border-slate-700 bg-black/50 text-slate-400";
+      fDone.className = f === 'done' ? "px-3 py-1.5 rounded text-xs font-bold border border-emerald-500 bg-emerald-950/40 text-emerald-300" : "px-3 py-1.5 rounded text-xs font-bold border border-slate-700 bg-black/50 text-slate-400";
+
+      renderOrdersTable();
+    }
+
+    function renderOrdersTable() {
+      const tbody = document.getElementById("orders-table-body");
+      tbody.innerHTML = "";
+
+      let filtered = store.orders;
+      if (currentOrderFilter === 'pending') filtered = store.orders.filter(o => o.status === '대기중');
+      if (currentOrderFilter === 'done') filtered = store.orders.filter(o => o.status === '수령완료');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-500">주문 내역이 없습니다.</td></tr>`;
         return;
       }
 
-      document.getElementById("adm-bank-input").value = store.bank;
-      document.getElementById("adm-name-input").value = store.accountName;
-
-      renderAdminStats();
-      const aModal = document.getElementById("admin-modal");
-      aModal.classList.remove("hidden");
-      aModal.classList.add("flex");
+      filtered.forEach(o => {
+        const isPending = (o.status === '대기중');
+        const row = document.createElement("tr");
+        row.className = "border-b border-slate-800 hover:bg-slate-800/40";
+        row.innerHTML = `
+          <td class="p-2.5 font-bold font-cinzel text-amber-300 text-sm">${o.no}</td>
+          <td class="p-2.5 text-slate-400">${o.time}</td>
+          <td class="p-2.5 font-semibold text-[#f0e6d2]">${o.studentId} ${o.depositor}</td>
+          <td class="p-2.5 text-slate-200">${o.summary}</td>
+          <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${o.method === '계좌이체' ? 'bg-amber-950 text-amber-300 border border-amber-700' : 'bg-slate-800 text-slate-300'}">${o.method}</span></td>
+          <td class="p-2.5 font-cinzel font-bold text-amber-200">${o.total.toLocaleString()}원</td>
+          <td class="p-2.5 text-center">
+            <button onclick="toggleOrderStatus(${o.id})" class="px-2.5 py-1 rounded text-xs font-black transition-all ${isPending ? 'bg-amber-500/20 border border-amber-500 text-amber-300 hover:bg-amber-500 hover:text-black' : 'bg-emerald-500/20 border border-emerald-500 text-emerald-300'}">
+              ${isPending ? '대기중 ⏳' : '수령완료 ✅'}
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
     }
 
-    function closeAdminModal() {
-      const aModal = document.getElementById("admin-modal");
-      aModal.classList.add("hidden");
-      aModal.classList.remove("flex");
+    function toggleOrderStatus(id) {
+      const target = store.orders.find(o => o.id === id);
+      if (target) {
+        target.status = target.status === '대기중' ? '수령완료' : '대기중';
+        saveStore();
+        renderOrdersTable();
+      }
     }
 
-    function renderAdminStats() {
+    // ================= [창 2] 부스 매출 통계 및 설정 =================
+    function openStatsModal() {
+      authAdmin(() => {
+        renderStats();
+        const m = document.getElementById("stats-modal");
+        m.classList.remove("hidden");
+        m.classList.add("flex");
+      });
+    }
+
+    function closeStatsModal() {
+      const m = document.getElementById("stats-modal");
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+    }
+
+    function renderStats() {
       let totalRev = 0;
       let totalPeach = 0;
       let totalLemon = 0;
-
-      const tbody = document.getElementById("adm-order-table");
-      tbody.innerHTML = "";
 
       store.orders.forEach(o => {
         totalRev += o.total;
         totalPeach += o.peach;
         totalLemon += o.lemon;
-
-        const row = document.createElement("tr");
-        row.className = "border-b border-slate-800/80 hover:bg-slate-800/30";
-        row.innerHTML = `
-          <td class="p-1.5 font-bold font-cinzel text-amber-300">${o.no}</td>
-          <td class="p-1.5 text-slate-400">${o.time}</td>
-          <td class="p-1.5">체력:${o.peach} / 충전:${o.lemon}</td>
-          <td class="p-1.5">${o.method}</td>
-          <td class="p-1.5 text-[#f0e6d2]">${o.studentId} ${o.depositor}</td>
-          <td class="p-1.5 font-cinzel text-right font-bold">${o.total.toLocaleString()}원</td>
-        `;
-        tbody.appendChild(row);
       });
 
-      document.getElementById("adm-total-rev").innerText = `${totalRev.toLocaleString()}원`;
-      document.getElementById("adm-total-qty").innerText = `${totalPeach + totalLemon}잔`;
-      document.getElementById("adm-peach-qty").innerText = `${totalPeach}잔`;
-      document.getElementById("adm-lemon-qty").innerText = `${totalLemon}잔`;
+      document.getElementById("stat-total-rev").innerText = `${totalRev.toLocaleString()}원`;
+      document.getElementById("stat-total-qty").innerText = `${totalPeach + totalLemon}잔`;
+      document.getElementById("stat-peach-qty").innerText = `${totalPeach}잔`;
+      document.getElementById("stat-lemon-qty").innerText = `${totalLemon}잔`;
+
+      document.getElementById("stat-bank-input").value = store.bank;
+      document.getElementById("stat-name-input").value = store.accountName;
     }
 
     function saveBankConfig() {
-      const b = document.getElementById("adm-bank-input").value.trim();
-      const n = document.getElementById("adm-name-input").value.trim();
+      const b = document.getElementById("stat-bank-input").value.trim();
+      const n = document.getElementById("stat-name-input").value.trim();
       if (b) store.bank = b;
       if (n) store.accountName = n;
       saveStore();
@@ -729,31 +838,30 @@
         alert("내보낼 주문 내역이 없습니다.");
         return;
       }
-      let csv = "\uFEFF주문번호,시간,체력물약(개),충전형물약(개),결제방식,학번,입금자명,결제금액\n";
+      let csv = "\uFEFF주문번호,시간,체력물약(개),충전형물약(개),결제방식,학번,입금자명,결제금액,처리상태\n";
       store.orders.forEach(o => {
-        csv += `"${o.no}","${o.time}",${o.peach},${o.lemon},"${o.method}","${o.studentId}","${o.depositor}",${o.total}\n`;
+        csv += `"${o.no}","${o.time}",${o.peach},${o.lemon},"${o.method}","${o.studentId}","${o.depositor}",${o.total},"${o.status}"\n`;
       });
 
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `동아리축제_키오스크_매출정산_${new Date().toISOString().slice(0,10)}.csv`;
+      a.download = `축제음료부스_주문장부_${new Date().toISOString().slice(0,10)}.csv`;
       a.click();
       URL.revokeObjectURL(url);
     }
 
     function resetAllStats() {
-      if (confirm("정말로 모든 매출 데이터와 주문 내역을 초기화하시겠습니까?")) {
+      if (confirm("정말로 모든 매출 데이터와 주문 목록을 초기화하시겠습니까?")) {
         store.orderSeq = 1;
         store.orders = [];
         saveStore();
-        renderAdminStats();
+        renderStats();
         alert("초기화되었습니다.");
       }
     }
 
-    // 전체화면 및 화면 꺼짐 방지(Wake Lock)
     async function toggleFullscreen() {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {});
@@ -765,7 +873,6 @@
       }
     }
 
-    // 초기 실행
     window.addEventListener("DOMContentLoaded", () => {
       loadStore();
       updateUI();
