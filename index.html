@@ -80,17 +80,17 @@
       </div>
     </div>
 
-    <!-- 우측 상단 유틸리티 버튼 분리 -->
+    <!-- 우측 상단 유틸리티 버튼 -->
     <div class="flex items-center gap-2">
       <button onclick="toggleFullscreen()" class="px-3 py-1.5 rounded text-xs font-semibold bg-[#111a1e] border border-[#3c3c41] text-[#a09b8c] hover:text-[#f0e6d2] active:bg-[#1e282d]">
         ⛶ 전체화면
       </button>
-      <!-- 분리 1: 실시간 주문 현황 (대기 건수 배지 포함) -->
+      <!-- 주문 현황 (비밀번호 없이 즉시 오픈) -->
       <button onclick="openOrdersModal()" class="relative px-3 py-1.5 rounded text-xs font-bold bg-[#111a1e] border border-[#c8aa6e] text-amber-200 hover:text-white active:bg-[#1e282d] flex items-center gap-1.5 shadow-md">
         <span>📋 주문 현황</span>
         <span id="header-pending-badge" class="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-amber-500 text-black">0</span>
       </button>
-      <!-- 분리 2: 부스 통계 및 설정 -->
+      <!-- 통계 및 설정 (열 때마다 매번 비밀번호 입력) -->
       <button onclick="openStatsModal()" class="px-3 py-1.5 rounded text-xs font-semibold bg-[#111a1e] border border-[#3c3c41] text-[#a09b8c] hover:text-[#f0e6d2] active:bg-[#1e282d]">
         📊 통계 · 설정
       </button>
@@ -337,7 +337,7 @@
     </div>
   </div>
 
-  <!-- ================= MODAL 1: 실시간 주문 현황 (음료 배부용) ================= -->
+  <!-- ================= MODAL 1: 실시간 주문 현황 (비밀번호 없이 즉시 오픈) ================= -->
   <div id="orders-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4">
     <div class="w-full max-w-3xl rounded-xl bg-[#091428] border-2 border-[#c8aa6e] p-5 text-slate-200 max-h-[90vh] flex flex-col shadow-2xl">
       <div class="flex justify-between items-center border-b border-[#785a28]/60 pb-3 mb-3">
@@ -388,7 +388,7 @@
     </div>
   </div>
 
-  <!-- ================= MODAL 2: 부스 통계 및 설정 ================= -->
+  <!-- ================= MODAL 2: 부스 통계 및 설정 (열 때마다 비밀번호 인증) ================= -->
   <div id="stats-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4">
     <div class="w-full max-w-2xl rounded-xl bg-[#091428] border-2 border-[#c8aa6e] p-5 text-slate-200 max-h-[90vh] flex flex-col shadow-2xl">
       <div class="flex justify-between items-center border-b border-[#785a28]/60 pb-3 mb-4">
@@ -462,7 +462,7 @@
   <script>
     const cart = { peach: 0, lemon: 0 };
     const PRICE = 1000;
-    const ADMIN_PW = "ty358801#";
+    const ADMIN_PW = "ty358801#"; // 관리자 비밀번호
 
     let store = {
       bank: "토스뱅크 1000-0000-0000",
@@ -494,21 +494,6 @@
       if (hBadge) hBadge.innerText = pendingCount;
       const mBadge = document.getElementById("modal-pending-badge");
       if (mBadge) mBadge.innerText = `대기 ${pendingCount}건`;
-    }
-
-    // 관리자 인증 헬퍼 (세션 동안 인증 유지)
-    function authAdmin(callback) {
-      if (sessionStorage.getItem("kiosk_authed") === "true") {
-        callback();
-        return;
-      }
-      const input = prompt("관리자 인증 비밀번호를 입력하세요:");
-      if (input === ADMIN_PW) {
-        sessionStorage.setItem("kiosk_authed", "true");
-        callback();
-      } else if (input !== null) {
-        alert("비밀번호가 올바르지 않습니다.");
-      }
     }
 
     // 롤 아이템 구매 코인 효과음 (Web Audio API)
@@ -715,14 +700,12 @@
       tModal.classList.remove("flex");
     }
 
-    // ================= [창 1] 실시간 주문 현황 =================
+    // ================= [창 1] 실시간 주문 현황 (비밀번호 없이 즉시 열림) =================
     function openOrdersModal() {
-      authAdmin(() => {
-        renderOrdersTable();
-        const m = document.getElementById("orders-modal");
-        m.classList.remove("hidden");
-        m.classList.add("flex");
-      });
+      renderOrdersTable();
+      const m = document.getElementById("orders-modal");
+      m.classList.remove("hidden");
+      m.classList.add("flex");
     }
 
     function closeOrdersModal() {
@@ -787,14 +770,17 @@
       }
     }
 
-    // ================= [창 2] 부스 매출 통계 및 설정 =================
+    // ================= [창 2] 부스 통계 및 설정 (누를 때마다 비밀번호 매번 확인) =================
     function openStatsModal() {
-      authAdmin(() => {
+      const input = prompt("관리자 인증 비밀번호를 입력하세요:");
+      if (input === ADMIN_PW) {
         renderStats();
         const m = document.getElementById("stats-modal");
         m.classList.remove("hidden");
         m.classList.add("flex");
-      });
+      } else if (input !== null) {
+        alert("비밀번호가 올바르지 않습니다.");
+      }
     }
 
     function closeStatsModal() {
