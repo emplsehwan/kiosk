@@ -255,13 +255,13 @@
         </button>
       </div>
 
-      <!-- 계좌이체 -->
+      <!-- 계좌이체 (설정된 토스뱅크 계좌 반영) -->
       <div id="pay-content-transfer" class="space-y-3">
         <div class="p-3 rounded bg-[#010a13] border border-[#785a28] flex justify-between items-center">
           <div>
             <p class="text-xs text-slate-400">송금 계좌 (토스/카카오페이 가능)</p>
-            <p id="display-bank-info" class="text-base font-bold text-amber-300">토스뱅크 1000-0000-0000</p>
-            <p id="display-account-name" class="text-xs text-slate-300">예금주: 동아리 대표</p>
+            <p id="display-bank-info" class="text-base font-bold text-amber-300">토스뱅크 1908-4361-0817</p>
+            <p id="display-account-name" class="text-xs text-slate-300">예금주: 염세환</p>
           </div>
           <button onclick="copyBankAccount()" class="px-3 py-1.5 rounded text-xs font-bold bg-[#1e282d] border border-[#c8aa6e] text-amber-200 active:scale-95">
             계좌 복사
@@ -348,7 +348,6 @@
         <button onclick="closeOrdersModal()" class="text-slate-400 hover:text-white font-bold text-xl px-2">✕</button>
       </div>
 
-      <!-- 상태 필터 탭 -->
       <div class="flex gap-2 mb-3">
         <button onclick="setOrderFilter('all')" id="filter-all" class="px-3 py-1.5 rounded text-xs font-bold border border-[#c8aa6e] bg-[#1e282d] text-amber-200">
           전체 보기
@@ -361,7 +360,6 @@
         </button>
       </div>
 
-      <!-- 주문 목록 테이블 -->
       <div class="flex-1 overflow-y-auto border border-slate-800 rounded bg-black/60">
         <table class="w-full text-left border-collapse text-xs">
           <thead class="bg-slate-900 sticky top-0 border-b border-slate-800 text-slate-400">
@@ -375,9 +373,7 @@
               <th class="p-2.5 text-center">처리 상태</th>
             </tr>
           </thead>
-          <tbody id="orders-table-body">
-            <!-- JS 렌더링 -->
-          </tbody>
+          <tbody id="orders-table-body"></tbody>
         </table>
       </div>
 
@@ -388,7 +384,7 @@
     </div>
   </div>
 
-  <!-- ================= MODAL 2: 부스 통계 및 설정 (열 때마다 비밀번호 인증) ================= -->
+  <!-- ================= MODAL 2: 부스 통계 및 설정 (열 때마다 비밀번호 매번 확인) ================= -->
   <div id="stats-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4">
     <div class="w-full max-w-2xl rounded-xl bg-[#091428] border-2 border-[#c8aa6e] p-5 text-slate-200 max-h-[90vh] flex flex-col shadow-2xl">
       <div class="flex justify-between items-center border-b border-[#785a28]/60 pb-3 mb-4">
@@ -397,7 +393,6 @@
       </div>
 
       <div class="flex-1 overflow-y-auto space-y-4 pr-1 text-xs">
-        <!-- 4개 통계 카드 -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5">
           <div class="p-3.5 rounded-lg bg-black/60 border border-slate-800 shadow">
             <span class="text-slate-400 block mb-1">총 누적 매출</span>
@@ -417,7 +412,6 @@
           </div>
         </div>
 
-        <!-- 엑셀 다운로드 카드 -->
         <div class="p-3.5 rounded-lg bg-black/50 border border-slate-800 flex justify-between items-center">
           <div>
             <p class="font-bold text-slate-200">주문 장부 엑셀 내보내기</p>
@@ -428,7 +422,6 @@
           </button>
         </div>
 
-        <!-- 결제 계좌 설정 -->
         <div class="p-3.5 rounded-lg bg-black/50 border border-slate-800 space-y-2.5">
           <p class="font-bold text-slate-200">부스 입금 계좌정보 설정</p>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -462,11 +455,12 @@
   <script>
     const cart = { peach: 0, lemon: 0 };
     const PRICE = 1000;
-    const ADMIN_PW = "ty358801#"; // 관리자 비밀번호
+    const ADMIN_PW = "ty358801#"; // 관리자 인증 비밀번호
 
+    // 기본 계좌 설정 (염세환 학생 실계좌)
     let store = {
-      bank: "토스뱅크 1000-0000-0000",
-      accountName: "동아리 대표",
+      bank: "토스뱅크 1908-4361-0817",
+      accountName: "염세환",
       orderSeq: 1,
       orders: []
     };
@@ -476,7 +470,15 @@
     function loadStore() {
       const saved = localStorage.getItem("lol_kiosk_store");
       if (saved) {
-        try { store = JSON.parse(saved); } catch (e) {}
+        try { 
+          store = JSON.parse(saved); 
+          // 이전 더미 계좌번호가 캐시에 남아있다면 새 계좌로 자동 갱신
+          if (!store.bank || store.bank.includes("1000-0000-0000")) {
+            store.bank = "토스뱅크 1908-4361-0817";
+            store.accountName = "염세환";
+            saveStore();
+          }
+        } catch (e) {}
       }
       document.getElementById("display-bank-info").innerText = store.bank;
       document.getElementById("display-account-name").innerText = `예금주: ${store.accountName}`;
@@ -496,7 +498,7 @@
       if (mBadge) mBadge.innerText = `대기 ${pendingCount}건`;
     }
 
-    // 롤 아이템 구매 코인 효과음 (Web Audio API)
+    // Web Audio API 기반 LoL 구매 골드 코인 사운드
     function playLoLPurchaseSound() {
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
